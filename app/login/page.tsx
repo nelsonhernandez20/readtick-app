@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Radio,
@@ -22,7 +22,7 @@ function safeNextPath(raw: string | null): string {
   return raw;
 }
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = safeNextPath(searchParams.get('next'));
@@ -378,5 +378,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#191A23] flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#B9FF66]" />
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }
