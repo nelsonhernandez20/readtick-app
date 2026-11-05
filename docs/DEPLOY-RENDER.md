@@ -14,7 +14,7 @@ Sí: **un solo repositorio en GitHub** puede levantar **dos Web Services** en Re
 
 2. **GitHub**: crea repo vacío y:
    ```bash
-   git remote add origin git@github.com:TU_USUARIO/readtick-app.git
+   git remote add origin git@github-personal:TU_USUARIO/readtick-app.git
    git branch -M main
    git push -u origin main
    ```

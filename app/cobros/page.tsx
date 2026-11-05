@@ -8,6 +8,7 @@ import {
   XCircle,
   AlertCircle,
   ExternalLink,
+  Eye,
   RefreshCw,
   Search,
   ShieldCheck,
