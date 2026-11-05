@@ -47,6 +47,48 @@ try {
   console.warn('Could not override fetchWebcastSignatureFromProvider:', e);
 }
 
+function normalizeSignServerUrl(raw: string): string {
+  return raw.trim().replace(/\/+$/, '');
+}
+
+/** Render Free apaga el signer tras ~15 min; el primer request puede tardar ~30–60s. */
+async function ensureSignServerReady(signServerUrl: string): Promise<void> {
+  const base = normalizeSignServerUrl(signServerUrl);
+  if (base.startsWith('http://localhost') || base.startsWith('http://127.0.0.1')) {
+    return;
+  }
+
+  const attempts = 4;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const res = await fetch(`${base}/health`, {
+        method: 'GET',
+        cache: 'no-store',
+        signal: AbortSignal.timeout(60_000),
+      });
+      if (res.ok) return;
+    } catch (err) {
+      console.warn(`[Signer] Health check ${i}/${attempts} failed for ${base}:`, err);
+    }
+    if (i < attempts) {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
+  }
+
+  throw new Error(
+    'El servidor de firmas (readtik-signer) no respondió. En Render Free puede tardar hasta 1 minuto en despertar: abre https://readtik-signer.onrender.com/health en el navegador y vuelve a conectar.',
+  );
+}
+
+function configureSignServerBasePath(signServerUrl: string): void {
+  const base = normalizeSignServerUrl(signServerUrl);
+  const cfg = SignConfig as { basePath?: string; cachedInstance?: unknown };
+  if (cfg.basePath !== base) {
+    cfg.basePath = base;
+    cfg.cachedInstance = undefined;
+  }
+}
+
 // Global active streams registry to ensure clean disconnections
 const activeStreamCleanupMap = new Map<string, () => void>();
 
@@ -191,9 +233,15 @@ export async function GET(req: NextRequest) {
 
       try {
         const signServerUrl = process.env.TIKTOK_SIGN_SERVER_URL || 'http://localhost:8080';
-        if (signServerUrl) {
-          SignConfig.basePath = signServerUrl;
-        }
+        configureSignServerBasePath(signServerUrl);
+
+        sendEvent({
+          type: 'status',
+          status: 'connecting',
+          message: 'Preparando servidor de firmas (Render Free puede tardar ~30s)...',
+          timestamp: Date.now(),
+        });
+        await ensureSignServerReady(signServerUrl);
 
         const apiKey = process.env.EULERSTREAM_API_KEY || searchParams.get('apiKey') || '';
         const sessionId = process.env.TIKTOK_SESSION_ID || searchParams.get('sessionId') || '';
@@ -253,6 +301,9 @@ export async function GET(req: NextRequest) {
               friendlyMsg = `No se pudo verificar la firma de la transmisión. Verifica que el directo esté público y vuelve a intentar.`;
             } else if (errMsg.includes('Rate Limited') || errMsg.includes('Too many connections')) {
               friendlyMsg = `Límite de solicitudes temporales alcanzado. Espera unos momentos antes de volver a conectar.`;
+            } else if (errMsg.includes('502') || errMsg.includes('Bad Gateway')) {
+              friendlyMsg =
+                'El servidor de firmas está despertando o no está disponible (502). Espera ~1 minuto, abre https://readtik-signer.onrender.com/health y vuelve a conectar.';
             }
 
             sendEvent({
