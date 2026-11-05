@@ -1,0 +1,49 @@
+# Blueprint Render: 2 servicios desde el mismo repo
+# Docs: https://render.com/docs/infrastructure-as-code
+#
+# Después del deploy:
+# 1. Copia la URL pública del servicio readtik-signer (ej. https://readtik-signer.onrender.com)
+# 2. En readtik-web → Environment → TIKTOK_SIGN_SERVER_URL = esa URL (sin barra final)
+# 3. Redeploy readtik-web si cambiaste variables NEXT_PUBLIC_* (se inyectan en build)
+
+services:
+  # --- App Next.js (dashboard, login, pagos, cobros, API /api/tiktok) ---
+  - type: web
+    name: readtik-web
+    runtime: node
+    plan: free
+    region: ohio
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false
+      - key: ADMIN_EMAILS
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: TIKTOK_SIGN_SERVER_URL
+        sync: false
+
+  # --- Microservicio de firmas TikTok (tiktok-live-connector) ---
+  - type: web
+    name: readtik-signer
+    runtime: node
+    plan: free
+    region: ohio
+    rootDir: signer
+    buildCommand: npm ci || npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
