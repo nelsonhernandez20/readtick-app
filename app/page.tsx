@@ -10,6 +10,7 @@ import AlertOverlay from '@/components/AlertOverlay';
 import SettingsModal from '@/components/SettingsModal';
 import SimulatorDrawer from '@/components/SimulatorDrawer';
 import ProModal from '@/components/ProModal';
+import AndroidDownloadCard from '@/components/AndroidDownloadCard';
 import { TikTokLiveEvent, GiftEvent, FollowEvent, ShareEvent, TTSSettings, SoundSettings, StatusEvent, CustomGiftSoundRule } from '@/types/tiktok';
 import { audioEngine } from '@/lib/audioEngine';
 import { ttsEngine, DEFAULT_TTS_SETTINGS, containsBannedWord } from '@/lib/ttsEngine';
@@ -536,6 +537,8 @@ export default function ReadTikApp() {
           onConnect={connectToStream}
           onDisconnect={disconnectStream}
         />
+
+        <AndroidDownloadCard compact />
 
         {/* Banner para usuarios sin PRO hacia la zona de pagos */}
         {!subscription.isPro && (

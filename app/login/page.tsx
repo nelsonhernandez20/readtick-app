@@ -15,7 +15,9 @@ import {
   Loader2,
   Sparkles,
   Info,
+  Smartphone,
 } from 'lucide-react';
+import AndroidDownloadCard from '@/components/AndroidDownloadCard';
 import { createClient, isSupabaseConfigured } from '@/utils/supabase/client';
 function safeNextPath(raw: string | null): string {
   if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/';
@@ -362,6 +364,14 @@ function LoginPageContent() {
             Al continuar, aceptas la configuración y políticas de uso de ReadTik.
           </p>
         </div>
+
+        <AndroidDownloadCard compact />
+        <p className="text-center text-[11px] text-slate-500">
+          <a href="/descargar" className="inline-flex items-center gap-1 text-[#B9FF66] hover:underline">
+            <Smartphone className="w-3 h-3" />
+            Cómo instalarla en el teléfono
+          </a>
+        </p>
 
         {/* Footer info */}
         <div className="text-center text-xs text-slate-500 flex items-center justify-center gap-2">

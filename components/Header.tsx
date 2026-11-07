@@ -14,6 +14,7 @@ import {
   User as UserIcon,
   CreditCard,
   Sparkles,
+  Smartphone,
 } from 'lucide-react';
 import { StatusEvent } from '@/types/tiktok';
 import { createClient, isSupabaseConfigured } from '@/utils/supabase/client';
@@ -223,6 +224,14 @@ export default function Header({
               <span className="sm:hidden text-xs">PRO</span>
             </button>
           )}
+
+          <a
+            href="/descargar"
+            title="Descargar app Android"
+            className="p-2 rounded-lg bg-[#191A23] hover:bg-[#252631] text-[#F3F3F3] border border-[#292A36] transition-colors shrink-0"
+          >
+            <Smartphone className="w-4 h-4 text-[#B9FF66]" />
+          </a>
 
           {/* Settings Modal Button */}
           <button

@@ -38,10 +38,13 @@ export async function updateSession(request: NextRequest) {
     pathname.startsWith('/login') ||
     pathname.startsWith('/pagos') ||
     pathname.startsWith('/overlay') ||
+    pathname.startsWith('/descargar') ||
+    pathname.startsWith('/downloads') ||
     pathname.startsWith('/api/tiktok') ||
     pathname.startsWith('/auth') ||
     pathname.startsWith('/_next') ||
-    pathname.includes('/favicon.ico');
+    pathname.includes('/favicon.ico') ||
+    pathname.endsWith('.apk');
 
   // If Supabase is not configured yet with real keys, allow viewing login / demo
   if (!isConfigured) {
