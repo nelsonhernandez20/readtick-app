@@ -1,0 +1,11 @@
+sdk.dir=/Users/TU_USUARIO/Library/Android/sdk
+
+# URL pública de ReadTik (mismo backend SSE que la web)
+READTIK_API_URL=https://readtik-web.onrender.com
+
+# Solo para despertar el signer en Render Free (GET /health). No firma desde el teléfono.
+SIGNER_URL=https://readtik-signer.onrender.com
+
+# Mismas claves que en .env.local de la web
+SUPABASE_URL=https://tu-proyecto.supabase.co
+SUPABASE_ANON_KEY=tu-clave-anon-publica

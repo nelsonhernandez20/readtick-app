@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ReadTik</string>
+    <string name="live_notification_channel">ReadTik en vivo</string>
+    <string name="live_notification_title">ReadTik escuchando el live</string>
+</resources>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ReadTik" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#191A23</item>
+        <item name="android:navigationBarColor">#191A23</item>
+        <item name="android:windowBackground">#191A23</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

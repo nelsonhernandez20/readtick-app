@@ -35,3 +35,10 @@ next-env.d.ts
 # cursor / uploads locales
 .cursor/
 uploads/
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
